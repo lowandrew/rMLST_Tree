@@ -4,6 +4,7 @@ from io import StringIO
 from Bio.Blast import NCBIXML
 import os
 import glob
+from Bio.Seq import Seq
 import multiprocessing
 
 
@@ -47,7 +48,11 @@ def get_top_blast_hit(query, database):
             for hsp in alignment.hsps:
                 if j > 0:
                     break
-                sequence = str(hsp.query)
+                if hsp.align_length - hsp.sbjct_start < 1:
+                    sequence = str(Seq(hsp.query).reverse_complement())
+                else:
+                    sequence = str(hsp.query)
+                # print(sequence)
                 j += 1
                 count += 1
 
